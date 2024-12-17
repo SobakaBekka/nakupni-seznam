@@ -36,7 +36,7 @@ class GroceryAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = filteredItems[position]
         holder.name.text = item.name
-        holder.quantity.text = item.quantity
+        holder.quantity.text = item.quantity.toString()
         holder.type.text = item.type
         holder.checkBox.isChecked = item.purchased
 
@@ -44,17 +44,23 @@ class GroceryAdapter(
 
         holder.checkBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                holder.checkBox.isEnabled = false
-                handler.postDelayed({
-                    onDeleteClick(holder.adapterPosition)
-                }, 175)
+                val adapterPosition = holder.adapterPosition
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    holder.checkBox.isEnabled = false
+                    handler.postDelayed({
+                        onDeleteClick(adapterPosition)
+                    }, 175)
+                }
             } else {
                 item.purchased = false
             }
         }
 
         holder.itemView.setOnClickListener {
-            onEditClick(holder.adapterPosition)
+            val adapterPosition = holder.adapterPosition
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                onEditClick(adapterPosition)
+            }
         }
     }
 

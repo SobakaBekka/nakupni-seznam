@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (name.isNotEmpty()) {
                     if (quantity.toIntOrNull() != null) {
-                        val newItem = MainViewModel.GroceryItem(name, quantity, type = type)
+                        val newItem = MainViewModel.GroceryItem(name, quantity.toInt(), type, false)
                         viewModel.addItem(currentListPosition, newItem)
                     } else {
                         Toast.makeText(this, "Množství musí být číslo", Toast.LENGTH_SHORT).show()
@@ -158,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (name.isNotEmpty()) {
                     if (quantity.toIntOrNull() != null) {
-                        val updatedItem = MainViewModel.GroceryItem(name, quantity, item.purchased, type)
+                        val updatedItem = MainViewModel.GroceryItem(name, quantity.toInt(), type, item.purchased)
                         viewModel.editItem(currentListPosition, position, updatedItem)
                     } else {
                         Toast.makeText(this, "Množství musí být číslo", Toast.LENGTH_SHORT).show()

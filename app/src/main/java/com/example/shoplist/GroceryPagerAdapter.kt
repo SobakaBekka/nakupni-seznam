@@ -1,5 +1,6 @@
 package com.example.shoplist
 
+import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -39,6 +40,11 @@ class GroceryPagerAdapter(
             holder.titleText.text = list.name
             holder.deleteButton.setOnClickListener { onDeleteList(position) }
             holder.editButton.setOnClickListener { onEditList(position) }
+            holder.statisticsButton.setOnClickListener {
+                val intent = Intent(holder.itemView.context, StatisticsActivity::class.java)
+                intent.putExtra("list_position", position)
+                holder.itemView.context.startActivity(intent)
+            }
 
             holder.groceryAdapter = GroceryAdapter(list.items, { pos ->
                 onEditItemClick(list, pos)
@@ -90,6 +96,7 @@ class GroceryPagerAdapter(
         val titleText: TextView = itemView.findViewById(R.id.tv_list_title)
         val deleteButton: ImageButton = itemView.findViewById(R.id.btn_delete_list)
         val editButton: ImageButton = itemView.findViewById(R.id.btn_edit_list)
+        val statisticsButton: ImageButton = itemView.findViewById(R.id.btn_statistics)
         val searchInput: EditText = itemView.findViewById(R.id.et_search)
         var groceryAdapter: GroceryAdapter? = null
     }

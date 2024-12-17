@@ -63,6 +63,30 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    private fun createWelcomeList() {
+        val welcomeList = GroceryList("Vítejte v ShopList!")
+        welcomeList.items.addAll(listOf(
+            GroceryItem("Kuřecí prsa", 500, "Maso", false),
+            GroceryItem("Rajčata", 4, "Zelenina", false),
+            GroceryItem("Jablka", 6, "Ovoce", false),
+            GroceryItem("Mléko", 2, "Mléčné výrobky", false),
+            GroceryItem("Chléb", 1, "Chléb", false),
+            GroceryItem("Sýr", 200, "Mléčné výrobky", false),
+            GroceryItem("Mrkev", 3, "Zelenina", false),
+            GroceryItem("Banány", 5, "Ovoce", false),
+            GroceryItem("Jogurt", 3, "Mléčné výrobky", false),
+            GroceryItem("Hovězí maso", 300, "Maso", false)
+        ))
+        
+        // Удаляем существующий приветственный список, если он есть
+        groceryLists.value?.removeAll { it.name == "Vítejte v ShopList!" }
+        
+        // Добавляем новый приветственный список в начало
+        groceryLists.value?.add(0, welcomeList)
+        groceryLists.value = groceryLists.value
+        saveData()
+    }
+
     fun saveData() {
         viewModelScope.launch {
             try {
@@ -103,19 +127,27 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                         val itemsArray = listObject.getJSONArray("items")
                         for (j in 0 until itemsArray.length()) {
                             val itemObject = itemsArray.getJSONObject(j)
-                            val item = GroceryItem(
-                                itemObject.getString("name"),
-                                itemObject.getString("quantity"),
-                                itemObject.getBoolean("purchased"),
-                                itemObject.getString("type")
+                            list.items.add(
+                                GroceryItem(
+                                    itemObject.getString("name"),
+                                    itemObject.getInt("quantity"),
+                                    itemObject.getString("type"),
+                                    itemObject.getBoolean("purchased")
+                                )
                             )
-                            list.items.add(item)
                         }
                         lists.add(list)
                     }
                     groceryLists.value = lists
+                } else {
+                    groceryLists.value = mutableListOf()
                 }
+                
+                // Всегда создаем приветственный список при загрузке
+                createWelcomeList()
             } catch (e: Exception) {
+                groceryLists.value = mutableListOf()
+                createWelcomeList()
             }
         }
     }
@@ -126,9 +158,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     )
 
     data class GroceryItem(
-        var name: String,
-        var quantity: String = "",
-        var purchased: Boolean = false,
-        var type: String = "Jiné"
+        val name: String,
+        val quantity: Int,
+        val type: String,
+        var purchased: Boolean
     )
 }
